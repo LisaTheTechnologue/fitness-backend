@@ -21,12 +21,26 @@ public class AdminProductController {
     private final AdminProductService adminProductService;
 
     @PostMapping("/product")
-    public ResponseEntity<ProductDto> add(@RequestBody ProductDto dto) throws IOException {
+    public ResponseEntity<ProductDto> add(@ModelAttribute ProductDto dto) throws IOException {
         ProductDto dto1 = adminProductService.add(dto);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(dto1);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto1);
     }
     @GetMapping("/products")
     public ResponseEntity<List<ProductDto>> getAllProducts (){
-        return  ResponseEntity.ok(adminProductService.getAll());
+        return ResponseEntity.ok(adminProductService.getAll());
+    }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity<List<ProductDto>> getAllBName (@PathVariable String name){
+        return ResponseEntity.ok(adminProductService.getAllByName(name));
+    }
+
+    @DeleteMapping("/product/{productId}")
+    public ResponseEntity<Void> delete (@PathVariable Long productId){
+        boolean deleted = adminProductService.delete(productId);
+        if (deleted){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
