@@ -1,9 +1,11 @@
 package com.ecom.backend.controllers.admin;
 
 import com.ecom.backend.dto.CategoryDto;
+import com.ecom.backend.dto.FAQDto;
 import com.ecom.backend.dto.ProductDto;
 import com.ecom.backend.entity.Category;
 import com.ecom.backend.services.admin.adminproduct.AdminProductService;
+import com.ecom.backend.services.admin.faq.FAQService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ import java.util.List;
 public class AdminProductController {
 
     private final AdminProductService adminProductService;
-
+    private final FAQService faqService;
     @PostMapping("/product")
     public ResponseEntity<ProductDto> add(@ModelAttribute ProductDto dto) throws IOException {
         ProductDto dto1 = adminProductService.add(dto);
@@ -42,5 +44,30 @@ public class AdminProductController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/faq/{productId}")
+    public ResponseEntity<FAQDto> create(@PathVariable Long productId, @RequestBody FAQDto faqDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(faqService.create(productId, faqDto));
+    }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductDto> getById(@PathVariable Long productId){
+        ProductDto dto1 = adminProductService.getById(productId);
+        if (dto1 != null) {
+            return ResponseEntity.ok(dto1);
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/product/{productId}")
+    public ResponseEntity<ProductDto> update(@PathVariable Long productId,@ModelAttribute ProductDto dto) throws IOException{
+        ProductDto dto1 = adminProductService.update(productId,dto);
+        if (dto1 != null) {
+            return ResponseEntity.ok(dto1);
+        }else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -198,4 +198,10 @@ public class CartServiceImpl implements CartService{
         }
         return null;
     }
+    public List<OrderDto> getMyPlacedOrder (Long userId) {
+        return orderRepository.findByUserIdAndOrderStatusIn(userId,
+                List.of(OrderStatus.Placed,OrderStatus.Pending,OrderStatus.Delivered))
+                .stream().map(Order::getDto).collect(Collectors.toList());
+    }
+
 }
